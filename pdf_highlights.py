@@ -84,19 +84,5 @@ def save_highlights(path, text_highlights):
         f.write(text_highlights)
 
 
-def compare_highlights(pdf, all_highlights):
-    """
-    compares new highlights with saved_highlights to return only newly added highlights
-    :param pdf: given pdf path
-    :param all_highlights: all new highlights found in the pdf
-    :return: only new highlights (
-    """
-    with open(f"{pdf}_highlights.txt", "r") as f:
-        old_highlights = f.read()
-        new_highlights = all_highlights.replace(old_highlights, "")
-
-    return new_highlights
-
-
 if __name__ == "__main__":
     main()
