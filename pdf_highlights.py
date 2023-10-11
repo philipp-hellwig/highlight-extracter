@@ -1,11 +1,4 @@
-# for PDF processing
 import fitz
-
-
-def main():
-    pdf = r"<insert file path>"
-    highlights = find_highlights(pdf)  # start, end pages
-    save_highlights(r"<insert where you want your highlights stored>\highlights.txt", highlights)
 
 
 def get_highlights(page):
@@ -59,7 +52,7 @@ def find_highlights(pdf, start=1, end=None):
     """
 
     all_highlighted_text = ""
-    doc = fitz.open(pdf)
+    doc = fitz.open(stream=pdf, filetype="pdf")
     if not end:
         end = len(doc)
     else:
