@@ -22,31 +22,29 @@ def get_highlights(page):
     return highlights
 
 
-def get_highlighted_text(page, page_no, highlights, display_pages=False):
-    if display_pages:
-        highlighted_text = [f"*Page {page_no}*\n\n"]
-    else:
-        highlighted_text = [""]
+def get_highlighted_text(page, highlights, markdown=False):
     prev_highlight = False
-    # todo: catch IndexError when page index is out of range
     all_words = page.get_text_words()
+    highlighted_text = []
     for highlight in highlights:
-        highlighted_segment = []
-        for word in all_words:
+        highlighted_segment = ["### "] if highlight.height > 10 and markdown else []
+        for i, word in enumerate(all_words):
             word_rect = fitz.Rect(word[0:4])
             word_rect.y1 -= 5  # make rectangles thin enough for intersects function to work
             if highlight.intersects(word_rect):
                 highlighted_segment.append(word[4])
+                pos_highlight = i
 
         # add a line break if highlights are far enough apart
         if prev_highlight and abs(highlight.y0 - prev_highlight.y1) > 10:
-            highlighted_text.append("\n\n")
-        highlighted_text.append(" ".join(highlighted_segment))
+            highlighted_text.append([highlighted_text[-1][0] + .5, "\n\n"])
+        highlighted_text.append([pos_highlight, " ".join(highlighted_segment)])
         prev_highlight = highlight
-    return " ".join(highlighted_text)
+    highlighted_text = sorted(highlighted_text)
+    return " ".join([h[1] for h in highlighted_text])
 
 
-def find_highlights(pdf, start=1, end=None, display_pages=False):
+def find_highlights(pdf, start=1, end=None, display_pages=False, markdown = False):
     """
     :param display_pages: whether to add page indicators into the highlights string
     :param pdf: path of a pdf file in string format
@@ -55,15 +53,16 @@ def find_highlights(pdf, start=1, end=None, display_pages=False):
     :return: string of all highlighted text
     """
     all_highlighted_text = ""
+    # doc = fitz.open(pdf) # for running with path string
     doc = fitz.open(stream=pdf, filetype="pdf")
-    if not end:
-        end = len(doc)
+    if end is None or end > doc.page_count:
+        end = doc.page_count
     for i in range(start-1, end):
+        page_text = f"*Page {i + 1}*\n\n" if display_pages else ""
         page = doc[i]
         highlights = get_highlights(page)
-        page_text = get_highlighted_text(page, i+1, highlights, display_pages=display_pages)
-        if str(page_text) != f"Page {i+1}:\n":
-            all_highlighted_text += page_text + "\n\n"
+        page_text += get_highlighted_text(page, highlights, markdown)
+        all_highlighted_text += page_text + "\n\n"
     return all_highlighted_text
 
 
