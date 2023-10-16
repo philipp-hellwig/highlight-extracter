@@ -21,11 +21,11 @@ def get_annotations(page):
     return highlights
 
 
-def get_annotation_text(page, highlights, markdown=False):
+def get_annotation_text(page, annotations, markdown=False):
     prev_highlight = False
     all_words = page.get_text_words()
     highlighted_text = []
-    for highlight in highlights:
+    for highlight in annotations:
         highlighted_segment = ["### "] if highlight.height > 10 and markdown else []
         for i, word in enumerate(all_words):
             word_rect = fitz.Rect(word[0:4])
@@ -59,8 +59,8 @@ def get_highlights(pdf, start=1, end=None, display_pages=False, markdown=False):
     for i in range(start-1, end):
         page_text = f"*Page {i + 1}*\n\n" if display_pages else ""
         page = doc[i]
-        highlights = get_annotations(page)
-        page_text += get_annotation_text(page, highlights, markdown)
+        annotations = get_annotations(page)
+        page_text += get_annotation_text(page, annotations, markdown)
         all_highlighted_text += page_text + "\n\n"
     return all_highlighted_text
 
