@@ -3,20 +3,20 @@ import pdf_highlights
 import streamlit as st
 import pyperclip
 
-
 highlights = ""
 st.set_page_config(page_title="Quick Highlights")
 # header
 st.write(
-         f'<span style="background-color:yellow;color:#000000;font-size:24px;border-radius:2%;">Condensed</span>.info\n',
-         '***',
-         unsafe_allow_html=True)
+    f'<span style="background-color:yellow;color:#000000;font-size:24px;border-radius:2%;">Condensed</span>.info\n',
+    '***',
+    unsafe_allow_html=True)
 # info text
 st.markdown(f"How it works:\n"
             "1. <span style='background-color:yellow;color:#000000;'>upload</span> your .pdf file\n "
             "2. click <span style='background-color:yellow;color:#000000;'>'Generate Highlights'</span>\n"
-            "3. <span style='background-color:yellow;color:#000000;'>copy</span> the highlighted text <span style='background-color:yellow;color:#000000;'>or download</span> it as a .txt file.",
-         unsafe_allow_html=True)
+            "3. <span style='background-color:yellow;color:#000000;'>copy</span> the highlighted text "
+            "<span style='background-color:yellow;color:#000000;'>or download</span> it as a .txt file.",
+            unsafe_allow_html=True)
 
 upload = st.file_uploader("Upload your pdf here:", type="pdf", label_visibility="hidden")
 
@@ -33,9 +33,10 @@ if st.button("Generate Highlights"):
         st.write("Please upload a file first.")
     else:
         if specify_pages:
-            highlights = pdf_highlights.find_highlights(upload.getvalue(), start, end, display_pages=page_no, markdown=md)
+            highlights = pdf_highlights.get_highlights(upload.getvalue(), start, end, display_pages=page_no,
+                                                       markdown=md)
         else:
-            highlights = pdf_highlights.find_highlights(upload.getvalue(), display_pages=page_no, markdown=md)
+            highlights = pdf_highlights.get_highlights(upload.getvalue(), display_pages=page_no, markdown=md)
         st.markdown(highlights)
 
         # download section

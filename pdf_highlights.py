@@ -1,7 +1,7 @@
 import fitz
 
 
-def get_highlights(page):
+def get_annotations(page):
     annot = page.first_annot
     highlights = []
     while annot:
@@ -17,12 +17,11 @@ def get_highlights(page):
                     coord = fitz.Quad(all_coordinates[i]).rect
                     coord.y1 -= 5
                     highlights.append(coord)
-
         annot = annot.next
     return highlights
 
 
-def get_highlighted_text(page, highlights, markdown=False):
+def get_annotation_text(page, highlights, markdown=False):
     prev_highlight = False
     all_words = page.get_text_words()
     highlighted_text = []
@@ -34,7 +33,6 @@ def get_highlighted_text(page, highlights, markdown=False):
             if highlight.intersects(word_rect):
                 highlighted_segment.append(word[4])
                 pos_highlight = i
-
         # add a line break if highlights are far enough apart
         if prev_highlight and abs(highlight.y0 - prev_highlight.y1) > 10:
             highlighted_text.append([highlighted_text[-1][0] + .5, "\n\n"])
@@ -44,12 +42,13 @@ def get_highlighted_text(page, highlights, markdown=False):
     return " ".join([h[1] for h in highlighted_text])
 
 
-def find_highlights(pdf, start=1, end=None, display_pages=False, markdown = False):
+def get_highlights(pdf, start=1, end=None, display_pages=False, markdown=False):
     """
-    :param display_pages: whether to add page indicators into the highlights string
     :param pdf: path of a pdf file in string format
     :param start: first page (integer) the highlight parser should find_highlights in.
     :param end: last page (integer) the highlight parser should find_highlights in.
+    :param display_pages: whether to add page indicators into the highlights string
+    :param markdown: whether to use heading ###
     :return: string of all highlighted text
     """
     all_highlighted_text = ""
@@ -60,18 +59,13 @@ def find_highlights(pdf, start=1, end=None, display_pages=False, markdown = Fals
     for i in range(start-1, end):
         page_text = f"*Page {i + 1}*\n\n" if display_pages else ""
         page = doc[i]
-        highlights = get_highlights(page)
-        page_text += get_highlighted_text(page, highlights, markdown)
+        highlights = get_annotations(page)
+        page_text += get_annotation_text(page, highlights, markdown)
         all_highlighted_text += page_text + "\n\n"
     return all_highlighted_text
 
 
 def save_highlights(path, text_highlights):
-    """
-    saves highlights of a pdf to a txt file.
-    :param path: the path of the notes
-    :param text_highlights: highlights of the given pdf in string format
-    """
     with open(path, "w", encoding="utf-8") as f:
         f.write(text_highlights)
 
