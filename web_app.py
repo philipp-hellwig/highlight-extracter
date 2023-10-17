@@ -10,7 +10,7 @@ st.write(
     '***',
     unsafe_allow_html=True)
 # info text
-st.markdown(f"This site enables you to extract highlighted text from your pdfs to create summaries of papers more efficiently. Completely free of charge!\n")
+st.markdown(f"This site enables you to extract highlighted text from your pdfs to create summaries of papers more efficiently.\n")
 st.markdown("How it works:\n"
             "1. <span style='background-color:yellow;color:#000000;'>upload</span> your .pdf file\n "
             "2. adjust the options to your liking\n"
