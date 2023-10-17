@@ -1,7 +1,6 @@
-import streamlit as st
 import pdf_highlights
 import streamlit as st
-import pyperclip
+
 
 highlights = ""
 st.set_page_config(page_title="Quick Highlights")
@@ -11,11 +10,12 @@ st.write(
     '***',
     unsafe_allow_html=True)
 # info text
-st.markdown(f"How it works:\n"
+st.markdown(f"This site enables you to extract highlighted text from your pdfs to create summaries of papers more efficiently. Completely free of charge!\n")
+st.markdown("How it works:\n"
             "1. <span style='background-color:yellow;color:#000000;'>upload</span> your .pdf file\n "
-            "2. click <span style='background-color:yellow;color:#000000;'>'Generate Highlights'</span>\n"
-            "3. <span style='background-color:yellow;color:#000000;'>copy</span> the highlighted text "
-            "<span style='background-color:yellow;color:#000000;'>or download</span> it as a .txt file.",
+            "2. adjust the options to your liking\n"
+            "3. click <span style='background-color:yellow;color:#000000;'>'Generate Highlights'</span>\n"
+            "4. <span style='background-color:yellow;color:#000000;'>download</span> it as a .txt file",
             unsafe_allow_html=True)
 
 upload = st.file_uploader("Upload your pdf here:", type="pdf", label_visibility="hidden")
@@ -40,11 +40,6 @@ if st.button("Generate Highlights"):
         st.markdown(highlights)
 
         # download section
-        col1, col2, _ = st.columns([1.5, 1.5, 2.5])
+        col1, _ = st.columns([1.5, 4])
         with col1:
             st.download_button("Download as .txt", highlights)
-        with col2:
-            clipboard = st.button(":clipboard: Copy to clipboard")
-        if clipboard:
-            # @todo: make clipboard work
-            pyperclip.copy("hi")
